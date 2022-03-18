@@ -1,23 +1,23 @@
 <template>
-<div id="app"> 
-  <Chart />
+<div id="app" class="container"> 
+  <!-- <Chart /> -->
   <!-- <RealTimeStaticChart/> -->
-  <!-- <ChartLine/> -->
+  <ChartLine/>
   
 </div>
 </template>
 
 <script>
-import Chart from './components/Chart.vue';
+// import Chart from './components/Chart.vue';
 // import RealTimeStaticChart from './components/RealTimeStaticChart.vue';
-// import ChartLine from './components/ChartLine.vue';
+import ChartLine from './components/ChartLine.vue';
 
 export default {
   name: 'App',
   components: {
-  Chart,
+  // Chart,
   // RealTimeStaticChart,
-  // ChartLine
+  ChartLine
   }
 }
 </script>

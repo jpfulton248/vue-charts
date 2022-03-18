@@ -1,5 +1,5 @@
 <template>
-  <!-- this chart is made using realtime apexcharts but with static data  -->
+  <!--  realtime apexcharts but with static data  -->
   <div id="app">
     <div id="chart">
       <apexchart

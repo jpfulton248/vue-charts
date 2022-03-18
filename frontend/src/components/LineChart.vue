@@ -1,5 +1,5 @@
 <template>
- <!-- this chart is made using chartjs  -->
+ <!-- chartjs  -->
   <LineChart
     :chart-data="data"
     :options="options"

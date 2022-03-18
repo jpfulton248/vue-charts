@@ -1,5 +1,5 @@
 <template>
- <!-- this chart is made using apexcharts -->
+ <!--  apexcharts -->
   <div id="chart" class="text-center">
     <apexchart
       ref="chart"
