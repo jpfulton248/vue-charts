@@ -11,3 +11,8 @@ Chart.defaults.layout.padding = 16
 Chart.defaults.plugins.legend.position = "bottom"
 Chart.defaults.plugins.title.display = true
 Chart.defaults.plugins.title.padding = 16
+
+
+export default {
+    Chart
+}
