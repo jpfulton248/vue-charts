@@ -1,5 +1,4 @@
 <template>
- <!--  apexcharts -->
   <div id="chart" class="text-center">
     <apexchart
       ref="chart"
@@ -56,7 +55,6 @@ export default {
         },
         xaxis: {
           type: "datetime",
-          range: 777600000,
         },
         yaxis: [
           {
@@ -67,7 +65,13 @@ export default {
               return max; 
             }
           }
+         
         ],
+         tooltip: {
+          x: {
+            format: 'dd MMM yyyy',
+          },
+        },
       },
       series: [
         {
@@ -79,7 +83,10 @@ export default {
   },
   methods: {
     connectWebSocket() {
+
+    
       let that = this;
+
       const socket = new WebSocket("ws://127.0.0.1:5000/get-updated-data");
 
       socket.onopen = function () {
@@ -95,17 +102,17 @@ export default {
         console.log("[Close] connection Closed");
       };
     },
+
     updateSeries(x) {
       x = JSON.parse(x);
       let date = new Date(x["exactearningsdate"]).getTime();
-
       data.push({
         date: x["exactearningsdate"],
         x: date,
         y: x["averageoptionvol"],
       });
 
-      console.log("update>>>>>", data);
+      console.log("data>>>>>", data);
 
       this.$refs.chart.updateSeries([
         {
@@ -113,6 +120,7 @@ export default {
         },
       ]);
     },
+
   },
   mounted: function () {
     setTimeout(() => {

@@ -78,12 +78,12 @@ let data = computed(() => ({
         backgroundColor: "#dc322f",
         data: [
           {
-            xaxis:{
-              type: "datetime",
-              range: 777600000, 
+            x:{
+              // type: "datetime",
+              // range: 777600000, 
             },
-            yaxis: {
-              price: price
+            y: {
+              data:[]
             }
           }
         ]
@@ -119,14 +119,23 @@ const options = ref({
                 console.log("data>>",earnings)
                 earnings.forEach((x)=>{
                   console.log("object>>", x)
+                 
+
+                 
                    // append the new data to the existing chart data
                     chart.data.datasets[0].data.push({
-                      x: x.timestamp,
-                      y: x.value
+                       
+                        x: x["exactearningsdate"],
+                        y: x["averagestockvol"],
+                      
                     });
 
-                    console.log("helllo",data.value.datasets)
+                    console.log("data??",data.value.datasets[0])
+                   
                 })
+                  // chart.data.datasets[0].data.push(...earnings);
+                  // chart.update('quite')
+                  // console.log("data??",data.value.datasets)
               })
               // .then( data => {
                 

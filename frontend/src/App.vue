@@ -6,7 +6,7 @@
     <div class="row">
       <!-- <RealTimeStaticChart /> -->
     </div>
-    <div class="row">
+    <div class="row custom" >
       <!-- <ChartLine /> -->
     </div>
   </div>
@@ -40,9 +40,12 @@ export default {
   border-radius: 0.5rem;
 }
 
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   .container {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+} */
+.custom{
+  padding: 40px;
 }
 </style>
