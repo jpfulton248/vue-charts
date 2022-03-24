@@ -1,7 +1,10 @@
 <template>
   <div id="app" class="container">
     <div class="row">
-      <Chart />
+      <!-- <Chart /> -->
+    </div>
+     <div class="row">
+      <Changes />
     </div>
     <div class="row">
       <!-- <RealTimeStaticChart /> -->
@@ -13,14 +16,16 @@
 </template>
 
 <script>
-import Chart from "./components/Chart.vue";
+// import Chart from "./components/Chart.vue";
+import Changes from "./components/Changes.vue";
 // import RealTimeStaticChart from "./components/RealTimeStaticChart.vue";
 // import ChartLine from "./components/LineChart.vue";
 
 export default {
   name: "App",
   components: {
-    Chart,
+    // Chart,
+    Changes,
     // RealTimeStaticChart,
     // ChartLine,
   },

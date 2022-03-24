@@ -1,4 +1,4 @@
-from flask import Flask, request,jsonify
+from flask import Flask, request,jsonify,session
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from marshmallow import fields
@@ -11,9 +11,9 @@ from datetime import datetime
 # from src.services.test_services import get_updated_data
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/escreener_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/escreener_db'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://username:password@host/dbname'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://sql3480466:e4cWTVS4KE@sql3.freemysqlhosting.net/sql3480466'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://sql3480466:e4cWTVS4KE@sql3.freemysqlhosting.net/sql3480466'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -63,7 +63,30 @@ class Earningsdates(db.Model):
         self.staticunderlying = staticunderlying
         self.staticiv = staticiv
         self.actualmove = actualmove
-    
+
+
+# models
+class Changes(db.Model):  
+    changesid = db.Column(db.Integer, primary_key = True)
+    ticker = db.Column(db.String(15))
+    dated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.now)
+    iv = db.Column(db.Float)
+    straddle = db.Column(db.Float)
+    impliedmove = db.Column(db.Float)
+    underlying = db.Column(db.Float)
+    strike = db.Column(db.Float)
+    quarter = db.Column(db.String(2))
+    def __init__(self,ticker,dated,iv,straddle,impliedmove,underlying,strike,quarter):
+        self.ticker = ticker
+        self.dated = dated
+        self.iv = iv
+        self.straddle = straddle
+        self.impliedmove = impliedmove
+        self.underlying = underlying
+        self.strike = strike
+        self.quarter = quarter
+      
+
 
 
 #Schemas
@@ -95,6 +118,24 @@ class EarningsdatesSchema(ma.Schema):
 earning_schema = EarningsdatesSchema()
 earnings_schema = EarningsdatesSchema(many = True)
 
+#Schemas
+class ChangesSchema(ma.Schema):
+    __tablename__ = "changes"
+    changesid = fields.Integer(dump_only = True)
+    ticker = fields.String()
+    dated = fields.DateTime(format='%Y-%m-%dT%H:%M:%S%z')
+    iv = fields.Float()
+    straddle = fields.Float()
+    impliedmove = fields.Float()
+    underlying = fields.Float()
+    strike = fields.Float()
+    quarter = fields.String()
+    
+change_schema = ChangesSchema()
+changes_schema = ChangesSchema(many = True)
+
+
+
 
 #api for earningsdates table
 @app.route('/add-earning', methods=['POST'])
@@ -117,7 +158,6 @@ def create_earning():
     db.session.commit()
     return earning_schema.jsonify(new_earning)
    
-
 @app.route('/get-all-earnings', methods=['GET'])
 def get_earnings():
     all_earnings = Earningsdates.query.all()
@@ -129,7 +169,6 @@ def get_earning_by_id(id):
     get_earning = db.session.query(Earningsdates).order_by(Earningsdates.exactearningsdate.asc()).offset(id).first()
     earning = earning_schema.dump(get_earning)
     return earning
-
 
 @sock.route('/get-updated-earnings')
 def get_update_earnings(ws):
@@ -145,6 +184,53 @@ def get_update_earnings(ws):
         print(e)
         print("I am closing now due to: ", str(e))
         ws.close()
+
+
+
+
+# api for changes table
+@app.route('/get-all-changes', methods=['GET'])
+def get_changes():
+    all_changes = Changes.query.all()
+    result = changes_schema.dump(all_changes)
+    return jsonify(result)
+
+
+@app.route('/get-last-changes', methods=['GET'])
+def get_last_changes():
+    last_item = Changes.query.order_by(Changes.changesid.desc()).first()
+    result = change_schema.dump(last_item)
+    return jsonify(result)
+
+@app.route('/add-change', methods=['POST'])
+def add_change():
+    ticker = request.json['ticker']
+    dated = request.json['dated']
+    iv = request.json['iv']
+    straddle = request.json['straddle']
+    impliedmove = request.json['impliedmove']
+    underlying = request.json['underlying']
+    strike = request.json['strike']
+    quarter = request.json['quarter']
+  
+
+    new_change = Changes(ticker,dated,iv,straddle,impliedmove,underlying,strike,quarter)
+    db.session.add(new_change)
+    db.session.commit()
+    return change_schema.jsonify(new_change)
+   
+
+#       CREATE TABLE `changes` (
+#   `changesid` int(11) NOT NULL AUTO_INCREMENT,
+#   `ticker` varchar(15) NOT NULL,
+#   `dated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+#   `iv` decimal(10,2) NOT NULL,
+#   `straddle` decimal(10,2) NOT NULL,
+#   `impliedmove` decimal(10,2) NOT NULL,
+#   `underlying` decimal(10,2) NOT NULL,
+#   `strike` decimal(10,2) NOT NULL,
+#   `quarter` varchar(2) NOT NULL,
+#   PRIMARY KEY (`changesid`)
 
 
 

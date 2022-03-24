@@ -67,7 +67,7 @@ export default {
           }
          
         ],
-         tooltip: {
+        tooltip: {
           x: {
             format: 'dd MMM yyyy',
           },
@@ -112,7 +112,7 @@ export default {
         y: x["averageoptionvol"],
       });
 
-      console.log("data>>>>>", data);
+      console.log("data>>>>>", data); 
 
       this.$refs.chart.updateSeries([
         {
