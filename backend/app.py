@@ -11,9 +11,9 @@ from datetime import datetime
 # from src.services.test_services import get_updated_data
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/escreener_db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/escreener_db'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://username:password@host/dbname'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://sql3480466:e4cWTVS4KE@sql3.freemysqlhosting.net/sql3480466'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://sql3480466:e4cWTVS4KE@sql3.freemysqlhosting.net/sql3480466'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -191,7 +191,7 @@ def get_update_earnings(ws):
 # api for changes table
 @app.route('/get-all-changes', methods=['GET'])
 def get_changes():
-    all_changes = Changes.query.all()
+    all_changes = Changes.query.order_by(Changes.dated).all()
     result = changes_schema.dump(all_changes)
     return jsonify(result)
 

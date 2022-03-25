@@ -3,8 +3,7 @@
     <div class="custom">
       <label> Select Property: </label>
       <select @change="ChangeProperty">
-        <option>Select Property..</option>
-        <option value="straddle">Straddle</option>
+        <option value="straddle" selected>Straddle</option>
         <option value="impliedmove">ImpliedMove</option>
         <option value="underlying">Underlying</option>
         <option value="strike">Strike</option>
@@ -12,12 +11,12 @@
       </select>
     </div>
     <apexchart
+      ref="chart"
       width="800"
       class="custom"
-      type="bar"
+      type="line"
       :options="options"
       :series="series"
-      ref="chart"
     ></apexchart>
   </div>
 </template>
@@ -37,18 +36,14 @@ export default {
     return {
       intervalid1: "",
       id: null,
-      straddle: [],
-      impliedmove: [],
-      underlying: [],
-      strike: [],
-      quarter: [],
+      existingData: [],
+      property: "straddle",
 
       options: {
         chart: {
           id: "vuechart-example",
         },
         xaxis: {
-          // type: 'categories'
           type: "datetime",
         },
         yaxis: [
@@ -69,7 +64,7 @@ export default {
       },
       series: [
         {
-          name: "property",
+          name: "straddle",
           data: data,
         },
       ],
@@ -78,82 +73,55 @@ export default {
   methods: {
     getAllData() {
       axios.get("http://127.0.0.1:5000/get-all-changes").then((res) => {
-        data = res.data;
-        console.log("data>>", data);
-
-        data.forEach((element) => {
-          this.id = 0;
-          let a = element["straddle"];
-          this.getStraddleProperty(a);
-          let b = element["impliedmove"];
-          this.getImpliedMoveProperty(b);
-          let c = element["underlying"];
-          this.getUnderlyingProperty(c);
-          let d = element["strike"];
-          this.getStrikeProperty(d);
-          let f = element["quarter"];
-          this.getQuarterProperty(f);
-          this.id = element["changesid"];
-        });
-        console.log("lastid>>>", this.id);
+        this.existingData = res.data;
+        this.renderProperty();
       });
     },
-    getStraddleProperty(a) {
-      let val = a;
-      this.straddle.push(val);
-    },
-    getImpliedMoveProperty(b) {
-      let val = b;
-      this.impliedmove.push(val);
-    },
-    getUnderlyingProperty(c) {
-      let val = c;
-      this.underlying.push(val);
-    },
-    getStrikeProperty(d) {
-      let val = d;
-      this.strike.push(val);
-    },
-    getQuarterProperty(f) {
-      let val = f;
-      this.quarter.push(val);
+
+    renderProperty() {
+      data = [];
+      this.existingData.forEach((element) => {
+        let date = new Date(element["dated"]).getTime();
+        data.push({
+          x: date,
+          y: element[this.property],
+        });
+
+        this.id = element["changesid"];
+      });
+
+      this.$refs.chart.updateSeries([
+        {
+          data: data,
+        },
+      ]);
     },
     ChangeProperty(e) {
-      let dataArray = e.target.value;
-      console.log(dataArray);
-      switch (dataArray) {
-        case "straddle":
-          dataArray = this.straddle;
-          break;
-        case "impliedmove":
-          dataArray = this.impliedmove;
-          break;
-        case "underlying":
-          dataArray = this.underlying;
-          break;
-        case "strike":
-          dataArray = this.strike;
-          break;
-        case "quarter":
-          dataArray = this.quarter;
-          break;
-      }
-      this.chartOptions.series.data = dataArray;
-      console.log(this.chartOptions.series.data);
+      this.property = e.target.value;
+      this.renderProperty();
     },
     getLatestData() {
       axios.get("http://127.0.0.1:5000/get-last-changes").then((res) => {
-        let x = res.data;
-        if (x.changesid == this.id) {
-          console.log("no updates...")
-          this.getAllData();
+        let result = res.data;
+        if (result.changesid == this.id) {
           return;
         } else {
-          data.push(x);
-          this.getAllData();
-          console.log("update added>>>>", data)
+          this.existingData.push(result);
+          this.updateSeries(result);
         }
       });
+    },
+    updateSeries(result) {
+      let date = new Date(result["dated"]).getTime();
+      data.push({
+        x: date,
+        y: result[this.property],
+      });
+      this.$refs.chart.updateSeries([
+        {
+          data: data,
+        },
+      ]);
     },
     start() {
       let that = this;
