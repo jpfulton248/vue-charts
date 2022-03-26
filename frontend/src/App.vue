@@ -41,7 +41,7 @@ export default {
 }
 
 .chart-container {
-  background-color: #f5f4f3;
+  background-color: #000000;
   border-radius: 0.5rem;
 }
 

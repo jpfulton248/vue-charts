@@ -169,17 +169,17 @@ def get_earnings():
     result = earnings_schema.dump(all_earnings)
     return jsonify(result)
 
-# @app.route('/get-earning-by-id/<id>', methods=['GET'])
-# def get_earning_by_id(id):
-#     get_earning = db.session.query(Earningsdates).order_by(Earningsdates.exactearningsdate.asc()).offset(id).first()
-#     earning = earning_schema.dump(get_earning)
-#     return earning
-
-@app.route('/get-earning-by-symbol/<symbol>', methods=['GET'])
-def get_earning_by_id(symbol):
-    get_earning = db.session.query(Earningsdates).filter(Earningsdates.ticker == symbol).order_by(Earningsdates.exactearningsdate.asc()).first()
+@app.route('/get-earning-by-id/<id>', methods=['GET'])
+def get_earning_by_id(id):
+    get_earning = db.session.query(Earningsdates).order_by(Earningsdates.exactearningsdate.asc()).offset(id).first()
     earning = earning_schema.dump(get_earning)
     return earning
+
+# @app.route('/get-earning-by-symbol/<symbol>', methods=['GET'])
+# def get_earning_by_id(symbol):
+#     get_earning = db.session.query(Earningsdates).filter(Earningsdates.ticker == symbol).order_by(Earningsdates.exactearningsdate.asc()).first()
+#     earning = earning_schema.dump(get_earning)
+#     return earning
 
 
 @sock.route('/get-updated-earnings')
@@ -200,19 +200,35 @@ def get_update_earnings(ws):
 
 
 
+# # api for changes table
+# @app.route('/get-all-changes', methods=['GET'])
+# def get_changes(symbol):
+#     all_changes = Changes.query.filter(symbol==Changes.ticker).order_by(Changes.dated).many(100)
+#     result = changes_schema.dump(all_changes)
+#     return jsonify(result)
+
+
+# @app.route('/get-last-changes', methods=['GET'])
+# def get_last_changes():
+#     last_item = Changes.query.order_by(Changes.changesid.desc()).first()
+#     result = change_schema.dump(last_item)
+#     return jsonify(result)
+
 # api for changes table
-@app.route('/get-all-changes', methods=['GET'])
-def get_changes():
-    all_changes = Changes.query.order_by(Changes.dated).all()
+@app.route('/get-all-changes/<string:symbol>', methods=['GET'])
+def get_changes(symbol):
+    all_changes = Changes.query.filter(symbol==Changes.ticker).order_by(Changes.dated.desc()).limit(500).all()
     result = changes_schema.dump(all_changes)
     return jsonify(result)
 
 
-@app.route('/get-last-changes', methods=['GET'])
+@app.route('/get-last-changes/<string:symbol>', methods=['GET'])
 def get_last_changes():
     last_item = Changes.query.order_by(Changes.changesid.desc()).first()
     result = change_schema.dump(last_item)
     return jsonify(result)
+
+
 
 @app.route('/add-change', methods=['POST'])
 def add_change():

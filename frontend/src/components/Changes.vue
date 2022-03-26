@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     getAllData() {
-      axios.get("http://127.0.0.1:5000/get-all-changes").then((res) => {
+      axios.get("http://127.0.0.1:5000/get-all-changes/ORCL").then((res) => {
         this.existingData = res.data;
         this.renderProperty();
       });
@@ -101,7 +101,7 @@ export default {
       this.renderProperty();
     },
     getLatestData() {
-      axios.get("http://127.0.0.1:5000/get-last-changes").then((res) => {
+      axios.get("http://127.0.0.1:5000/get-last-changes/ORCL").then((res) => {
         let result = res.data;
         if (result.changesid == this.id) {
           return;
