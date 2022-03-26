@@ -16,6 +16,7 @@ MarkupSafe==2.1.0
 marshmallow==3.14.1
 marshmallow-sqlalchemy==0.27.0
 PyMySQL==1.0.2
+python-dotenv==0.20.0
 simple-websocket==0.5.1
 six==1.16.0
 SQLAlchemy==1.4.32
