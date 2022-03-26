@@ -7,12 +7,18 @@ from flask_sock import Sock
 import json
 import time
 from datetime import datetime
+from dotenv import load_dotenv
+import os
 # from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 # from src.services.test_services import get_updated_data
+
+load_dotenv()
+sqlalchemyurl = os.getenv("sqlalchemyurl")
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/escreener_db'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://username:password@host/dbname'
+app.config['SQLALCHEMY_DATABASE_URI'] = sqlalchemyurl
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
