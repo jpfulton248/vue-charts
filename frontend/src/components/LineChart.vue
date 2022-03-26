@@ -115,7 +115,7 @@ const options = ref({
           onRefresh: chart => {
             // request data so that it can be received asynchronously
             // assume the response is an array of {x: timestamp, y: value} objects
-            fetch('http://127.0.0.1:5000/get-all-earnings')
+            fetch('http://127.0.0.1:5001/get-all-earnings')
               .then(response => response.json())
               .then(data => {
                 // append the new data array to the existing chart data

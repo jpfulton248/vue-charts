@@ -87,7 +87,7 @@ export default {
     
       let that = this;
 
-      const socket = new WebSocket("ws://127.0.0.1:5000/get-updated-data");
+      const socket = new WebSocket("ws://127.0.0.1:5001/get-updated-data");
 
       socket.onopen = function () {
         console.log("Connection Success!!!");

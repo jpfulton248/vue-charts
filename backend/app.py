@@ -13,7 +13,6 @@ from datetime import datetime
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/escreener_db'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://username:password@host/dbname'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://sql3480466:e4cWTVS4KE@sql3.freemysqlhosting.net/sql3480466'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -164,11 +163,18 @@ def get_earnings():
     result = earnings_schema.dump(all_earnings)
     return jsonify(result)
 
-@app.route('/get-earning-by-id/<id>', methods=['GET'])
-def get_earning_by_id(id):
-    get_earning = db.session.query(Earningsdates).order_by(Earningsdates.exactearningsdate.asc()).offset(id).first()
+# @app.route('/get-earning-by-id/<id>', methods=['GET'])
+# def get_earning_by_id(id):
+#     get_earning = db.session.query(Earningsdates).order_by(Earningsdates.exactearningsdate.asc()).offset(id).first()
+#     earning = earning_schema.dump(get_earning)
+#     return earning
+
+@app.route('/get-earning-by-symbol/<symbol>', methods=['GET'])
+def get_earning_by_id(symbol):
+    get_earning = db.session.query(Earningsdates).filter(Earningsdates.ticker == symbol).order_by(Earningsdates.exactearningsdate.asc()).first()
     earning = earning_schema.dump(get_earning)
     return earning
+
 
 @sock.route('/get-updated-earnings')
 def get_update_earnings(ws):
